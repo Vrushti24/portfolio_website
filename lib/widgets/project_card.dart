@@ -1,0 +1,205 @@
+import 'package:flutter/material.dart';
+import 'package:portfolio_website/helper/url_launcher.dart';
+import '../modal/projects.dart';
+
+class ProjectCard extends StatefulWidget {
+  final Project project;
+
+  ProjectCard({required this.project});
+
+  @override
+  _ProjectCardState createState() => _ProjectCardState();
+}
+
+class _ProjectCardState extends State<ProjectCard>
+    with TickerProviderStateMixin {
+  bool isHovered = false;
+  late AnimationController _controller;
+  late Animation<double> _imageSizeAnimation;
+  double initialImageSize = 100.0; // Initial image size
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the animation controller
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+
+    _imageSizeAnimation = Tween<double>(
+      begin: 60.0,
+      end: 80.0,
+    ).animate(_controller);
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          isHovered = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          isHovered = false;
+        });
+      },
+      child: GestureDetector(
+        onTap: () {
+          UrlLauncher.launchURL(Uri.parse(widget.project.githubUrl));
+        },
+        child: Card(
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double cardWidth = constraints.maxWidth;
+              double cardHeight = 140.0;
+
+              if (cardWidth <= 200) {
+                cardHeight = 180.0;
+              }
+
+              final double imageSize = _imageSizeAnimation.value;
+
+              double fontSize = 20.0;
+              if (cardWidth <= 200) {
+                fontSize = 15.0;
+              }
+
+              return Container(
+                width: cardWidth,
+                height: cardHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          const Color.fromARGB(255, 76, 112, 243).withOpacity(
+                        0.7,
+                      ),
+                      blurRadius: 5,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isHovered
+                          ? [
+                              const Color.fromARGB(255, 151, 9, 71),
+                              const Color.fromARGB(255, 3, 62, 83),
+                            ]
+                          : [
+                              const Color(0xFF333333),
+                              const Color(0xFF11101D),
+                            ],
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              widget.project.name,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          // Added SingleChildScrollView
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Description :\n${widget.project.description}',
+                                  style: TextStyle(
+                                    fontSize: fontSize - 5,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 150),
+                                  child: const Text(
+                                    'Check out code on github: ',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              CircleAvatar(
+                                maxRadius: 15,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 32, 11, 94),
+                                child: CircleAvatar(
+                                  maxRadius: 13,
+                                  backgroundColor: Colors.white,
+                                  child: Image.asset(
+                                    'images/social/git.png',
+                                    width: imageSize,
+                                    height: imageSize,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
