@@ -20,14 +20,6 @@ function LinkedInIcon() {
   )
 }
 
-function TwitterIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  )
-}
-
 const socials = [
   {
     label: 'GitHub',
@@ -40,12 +32,6 @@ const socials = [
     icon: <LinkedInIcon />,
     href: 'https://www.linkedin.com/in/vrushti-shah-3203141b2/',
     glow: '#00E5CC',
-  },
-  {
-    label: 'Twitter / X',
-    icon: <TwitterIcon />,
-    href: 'https://twitter.com/Vrushti_24',
-    glow: '#FF3366',
   },
 ]
 
@@ -92,10 +78,6 @@ export default function Contact() {
               something.
             </span>
           </h2>
-
-          <p className="font-body text-base md:text-lg mb-10" style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
-            Currently seeking full-time SWE roles across the US.
-          </p>
 
           {/* Email CTA */}
           <button
