@@ -3,7 +3,7 @@ import useTypewriter from '../hooks/useTypewriter'
 const ROLES = [
   'Software Engineer',
   'Full-Stack Developer',
-  'Flutter Developer',
+  'Mobile Developer',
   'AI/ML Enthusiast',
 ]
 
