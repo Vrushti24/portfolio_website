@@ -1,0 +1,157 @@
+import { useState } from 'react'
+import useInView from '../hooks/useInView'
+import Toast from './Toast'
+
+const EMAIL = 'vrushtishah24@gmail.com'
+
+function GitHubIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  )
+}
+
+function LinkedInIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  )
+}
+
+function TwitterIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
+
+const socials = [
+  {
+    label: 'GitHub',
+    icon: <GitHubIcon />,
+    href: 'https://github.com/Vrushti24',
+    glow: '#FFE14D',
+  },
+  {
+    label: 'LinkedIn',
+    icon: <LinkedInIcon />,
+    href: 'https://www.linkedin.com/in/vrushti-shah-3203141b2/',
+    glow: '#00E5CC',
+  },
+  {
+    label: 'Twitter / X',
+    icon: <TwitterIcon />,
+    href: 'https://twitter.com/Vrushti_24',
+    glow: '#FF3366',
+  },
+]
+
+export default function Contact() {
+  const [ref, inView] = useInView()
+  const [toast, setToast] = useState(false)
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+      setToast(true)
+      setTimeout(() => setToast(false), 2800)
+    } catch {
+      window.location.href = `mailto:${EMAIL}`
+    }
+  }
+
+  return (
+    <section id="contact" className="section-pad">
+      <div className="max-w-4xl mx-auto px-6 md:px-10 text-center">
+        <p className="section-label mb-6">Get in Touch</p>
+
+        <div
+          ref={ref}
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'translateY(0)' : 'translateY(30px)',
+            transition: 'opacity 0.7s ease, transform 0.7s ease',
+          }}
+        >
+          <h2
+            className="font-display font-black leading-tight mb-6"
+            style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)', color: '#ffffff' }}
+          >
+            Let's build{' '}
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #FFE14D, #FF3366)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              something.
+            </span>
+          </h2>
+
+          <p className="font-body text-base md:text-lg mb-10" style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
+            Currently seeking full-time SWE roles across the US.
+          </p>
+
+          {/* Email CTA */}
+          <button
+            onClick={copyEmail}
+            className="w-full md:w-auto inline-flex items-center justify-center gap-3 px-10 py-4 rounded-full font-body font-semibold text-base transition-all duration-300 hover:scale-105 mb-10"
+            style={{
+              background: '#FFE14D',
+              color: '#000',
+              boxShadow: '0 0 30px rgba(255,225,77,0.3)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 50px rgba(255,225,77,0.5)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 30px rgba(255,225,77,0.3)' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 6l-10 7L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {EMAIL}
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-black/10">copy</span>
+          </button>
+
+          {/* Socials */}
+          <div className="flex justify-center gap-5 mb-10">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
+                style={{
+                  background: '#13131A',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: 'rgba(255,255,255,0.5)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = s.glow
+                  e.currentTarget.style.boxShadow = `0 0 20px ${s.glow}30`
+                  e.currentTarget.style.borderColor = `${s.glow}40`
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
+                  e.currentTarget.style.boxShadow = ''
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                }}
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
+
+        </div>
+      </div>
+
+      <Toast message="Email copied! ✓" visible={toast} />
+    </section>
+  )
+}

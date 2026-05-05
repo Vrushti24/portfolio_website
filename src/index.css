@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Variables ───────────────────────────── */
+:root {
+  --color-bg: #060608;
+  --color-card: #13131A;
+  --color-primary: #FFE14D;
+  --color-secondary: #FF3366;
+  --color-tertiary: #00E5CC;
+  --color-purple: #B06AFF;
+  --color-orange: #FF6B2B;
+  --color-green: #69F0AE;
+  --card-border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Base ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Noise Texture Overlay ───────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* ── Selection ───────────────────────────────── */
+::selection {
+  background: var(--color-primary);
+  color: #000;
+}
+
+/* ── Text Stroke Utility ─────────────────────── */
+.text-stroke {
+  -webkit-text-stroke: 2px #ffffff;
+  color: transparent;
+}
+
+.text-stroke-primary {
+  -webkit-text-stroke: 2px var(--color-primary);
+  color: transparent;
+}
+
+/* ── Scroll-reveal ───────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Glow Shadows ────────────────────────────── */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(255, 225, 77, 0.25), 0 0 40px rgba(255, 225, 77, 0.1);
+}
+.glow-secondary {
+  box-shadow: 0 0 20px rgba(255, 51, 102, 0.25), 0 0 40px rgba(255, 51, 102, 0.1);
+}
+.glow-tertiary {
+  box-shadow: 0 0 20px rgba(0, 229, 204, 0.25), 0 0 40px rgba(0, 229, 204, 0.1);
+}
+
+/* ── Card Base ───────────────────────────────── */
+.card {
+  background: var(--color-card);
+  border: var(--card-border);
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.02) translateY(-2px);
+}
+
+/* ── Section padding ─────────────────────────── */
+.section-pad {
+  padding: 6rem 0;
+}
+
+@media (max-width: 768px) {
+  .section-pad {
+    padding: 4rem 0;
+  }
+}
+
+/* ── Typewriter cursor ───────────────────────── */
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--color-primary);
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Toast ───────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--color-primary);
+  color: #000;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  z-index: 10000;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Timeline line gradient ──────────────────── */
+.timeline-line {
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary), var(--color-tertiary));
+}
+
+/* ── Gradient text ───────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Section label ───────────────────────────── */
+.section-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+/* ── Pill tags ───────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* ── Nav active indicator ────────────────────── */
+.nav-link {
+  position: relative;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.2s ease;
+  padding: 0.25rem 0;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+.nav-link:hover {
+  color: #ffffff;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+.nav-link.active {
+  color: var(--color-primary);
+}
+
+/* ── Orb animations ──────────────────────────── */
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(60px, -40px) scale(1.05); }
+  66%       { transform: translate(-30px, 50px) scale(0.97); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-50px, 60px) scale(1.03); }
+  66%       { transform: translate(40px, -30px) scale(0.98); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(35px, 35px) scale(1.04); }
+}
+
+.orb-1 { animation: drift1 12s ease-in-out infinite; }
+.orb-2 { animation: drift2 14s ease-in-out infinite; }
+.orb-3 { animation: drift3 10s ease-in-out infinite; }
+
+/* ── Scroll indicator bounce ─────────────────── */
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+.bounce-arrow { animation: bounce-arrow 2s ease-in-out infinite; }
+
+/* ── Featured project card ───────────────────── */
+.featured-card {
+  background: var(--color-card);
+  border: var(--card-border);
+  border-radius: 20px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  overflow: hidden;
+}
+.featured-card:hover {
+  transform: translateY(-4px);
+}
