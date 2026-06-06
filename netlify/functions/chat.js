@@ -1,6 +1,3 @@
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
-
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Vrushti Shah's personal portfolio website. Your ONLY purpose is to answer questions about Vrushti — her background, skills, experience, projects, education, awards, and anything else related to her.
 
 If anyone asks about topics unrelated to Vrushti (general coding questions, world events, other people, etc.), politely decline and redirect them. Say something like: "I'm Vrushti's portfolio assistant — I can only answer questions about her background, skills, and experience. What would you like to know about Vrushti?"
@@ -103,8 +100,8 @@ PROJECTS
    - SELECTED for 2025 Northeastern MGEN / SEIS Student Innovation Showcase; presented to faculty, peers, and industry guests including Dr. Kal Bugrara and Arya Babaei. Mentored by Prof. Ahmed Rabah.
 
 7. MotherCare AI — AI Health Companion (June 2025) | Built at Dream AI Hackathon
-   - AI-powered health companion with symptom analysis, personalized health reports, diet/workout recommendations, and a 24/7 intelligent health chatbot
-   - Built at the Dream AI Hackathon (June 21–22, 2025) at The Foundry, Cambridge MA
+   - AI-powered health companion with symptom analysis, personalized health reports, diet/workout recommendations, and 24/7 health chatbot
+   - Built at Dream AI Hackathon (June 21–22, 2025) at The Foundry, Cambridge MA
 
 8. IdeaBoard — Social Innovation Sharing Platform (Nov 2025) | Java, Spring Boot, Hibernate, JSP, MySQL
    - Full-stack MVC platform with REST APIs, JPA entities, optimized SQL queries
@@ -121,11 +118,11 @@ PROJECTS
 
 AWARDS & RECOGNITION
 
-- 2025 Northeastern MGEN / SEIS Student Innovation Showcase — ScanMate project selected and presented to faculty, peers, and industry guests including Dr. Kal Bugrara and Arya Babaei. Mentored by Prof. Ahmed Rabah.
-- 2026 MGEN Student Showcase — Featured in Prof. Nik Bear Brown's MGEN Student Showcase 2026 video among standout Northeastern MGEN/ISE student projects.
-- Featured by Northeastern University College of Engineering & SEIS — Spotlighted for "Addressing Problems by Leveraging AI and Machine Learning" (article: lnkd.in/eynndNNN)
-- PTC Intern Expo 2025 — PTC SVP Bruce Zambrowicz publicly highlighted Vrushti's work on LinkedIn: "She showed me 2 projects she completed that went into production... and she's wrapping up her third."
-- SheHacks DTU Hackathon (March 2021) — Team Aprotech won Most Innovative Idea Award; built a pneumonia detection Flutter app using chest X-ray images. Partner: Sejal Khanna.
+- 2025 Northeastern MGEN / SEIS Student Innovation Showcase — ScanMate selected and presented to faculty, peers, and industry guests including Dr. Kal Bugrara and Arya Babaei. Mentored by Prof. Ahmed Rabah.
+- 2026 MGEN Student Showcase — Featured in Prof. Nik Bear Brown's MGEN Student Showcase 2026 video among top Northeastern MGEN/ISE student projects.
+- Featured by Northeastern University College of Engineering & SEIS — Spotlighted for "Addressing Problems by Leveraging AI and Machine Learning."
+- PTC Intern Expo 2025 — PTC SVP Bruce Zambrowicz publicly highlighted Vrushti: "She showed me 2 projects she completed that went into production... and she's wrapping up her third."
+- SheHacks DTU Hackathon (March 2021) — Team Aprotech won Most Innovative Idea Award; built a pneumonia detection Flutter app with partner Sejal Khanna.
 - GirlScript Foundation Contest — Won a contest organized by GirlScript Foundation
 - DevScript Open Source Program — Ranked 32nd out of 1000+ participants
 - SparkAR Challenge — Participated and completed
@@ -146,57 +143,49 @@ PUBLICATIONS & WRITING
 - Medium article: "Flutter + TensorFlow Lite — integrating ML models in Flutter" — published on Medium
 - Flutter Conf India 2023 — Attended (sponsored by Kayma Tech)`
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-
-  return {
-    plugins: [
-      react(),
-      {
-        name: 'dev-chat-api',
-        configureServer(server) {
-          server.middlewares.use('/api/chat', async (req, res) => {
-            if (req.method !== 'POST') {
-              res.statusCode = 405
-              res.end('Method Not Allowed')
-              return
-            }
-
-            let body = ''
-            req.on('data', chunk => { body += chunk })
-            req.on('end', async () => {
-              try {
-                const { messages } = JSON.parse(body)
-
-                const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${env.GROQ_API_KEY}`,
-                  },
-                  body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
-                    max_tokens: 512,
-                    temperature: 0.7,
-                  }),
-                })
-
-                const data = await groqRes.json()
-                if (!groqRes.ok) throw new Error(data.error?.message ?? `Groq error ${groqRes.status}`)
-                const text = data.choices?.[0]?.message?.content ?? 'No response.'
-
-                res.setHeader('Content-Type', 'application/json')
-                res.end(JSON.stringify({ text }))
-              } catch (err) {
-                res.statusCode = 500
-                res.setHeader('Content-Type', 'application/json')
-                res.end(JSON.stringify({ error: err.message }))
-              }
-            })
-          })
-        },
-      },
-    ],
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' }
   }
-})
+
+  try {
+    const { messages } = JSON.parse(event.body)
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+        max_tokens: 512,
+        temperature: 0.7,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({ error: data.error?.message ?? 'Groq API error' }),
+      }
+    }
+
+    const text = data.choices?.[0]?.message?.content ?? 'Sorry, no response received.'
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    }
+  } catch (err) {
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: err.message }),
+    }
+  }
+}

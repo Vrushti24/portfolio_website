@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Chatbot from './components/Chatbot'
 import Hero from './components/Hero'
 import About from './components/About'
 import Experience from './components/Experience'
@@ -80,6 +81,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <Chatbot />
     </>
   )
 }
