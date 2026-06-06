@@ -4,7 +4,6 @@ const SUGGESTED = [
   "What's her current experience?",
   "Tell me about her AI projects",
   "What tech stack does she know?",
-  "Is she open to work?",
 ]
 
 function ChatIcon() {
